@@ -18,8 +18,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ben/docling-convert-core"
-Repository = "https://github.com/ben/docling-convert-core"
+Homepage = "https://github.com/benlawraus/docling-convert-core"
+Repository = "https://github.com/benlawraus/docling-convert-core"
 
 [tool.setuptools]
 packages = ["docling_convert_core"]

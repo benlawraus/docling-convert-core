@@ -9,7 +9,7 @@ Supported formats: PDF, DOCX, PPTX, XLSX, HTML, XHTML, Markdown, CSV, images, As
 ## Installation
 
 ```bash
-pip install docling-convert-core
+pip install git+https://github.com/benlawraus/docling-convert-core.git
 ```
 
 ## Usage
