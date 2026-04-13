@@ -1,0 +1,25 @@
+[project]
+name = "docling-convert-core"
+version = "0.1.0"
+description = "Shared Docling document-to-markdown conversion with smart OCR routing"
+authors = [
+    { name = "Ben" }
+]
+license = { text = "GPL-3.0" }
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "docling",
+    "pypdfium2",
+]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/ben/docling-convert-core"
+Repository = "https://github.com/ben/docling-convert-core"
+
+[tool.setuptools]
+packages = ["docling_convert_core"]
