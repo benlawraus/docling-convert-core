@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 from pathlib import Path
 
 from docling.datamodel.base_models import InputFormat
@@ -72,6 +73,7 @@ def build_ocr_format_options(
 # reloading model weights on every call.
 _converters: dict[tuple, DocumentConverter] = {}
 _converter_no_ocr: DocumentConverter | None = None
+_convert_lock = threading.Lock()
 
 
 def _get_converter_no_ocr() -> DocumentConverter:
@@ -120,5 +122,6 @@ def convert_file(
     else:
         converter = _get_converter_ocr(ocr_backend, do_table_structure)
 
-    doc = converter.convert(str(filepath)).document
+    with _convert_lock:
+        doc = converter.convert(str(filepath)).document
     return doc.export_to_markdown()
