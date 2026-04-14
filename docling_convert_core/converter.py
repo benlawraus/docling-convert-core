@@ -116,22 +116,41 @@ def convert_file(
     """
     import sys
     filepath = Path(filepath)
+    file_size = filepath.stat().st_size if filepath.exists() else -1
+    print(f"DEBUG docling: {filepath.name} — size={file_size} bytes", file=sys.stderr, flush=True)
 
     # Smart OCR routing for PDFs
     is_pdf = filepath.suffix.lower() == ".pdf"
-    if is_pdf and has_good_text(filepath):
-        print(f"DEBUG docling: {filepath.name} — born-digital PDF, skipping OCR", file=sys.stderr, flush=True)
-        converter = _get_converter_no_ocr()
+    if is_pdf:
+        try:
+            import pymupdf
+            pdf_doc = pymupdf.open(str(filepath))
+            page_count = len(pdf_doc)
+            pdf_doc.close()
+            print(f"DEBUG docling: {filepath.name} — {page_count} pages", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"DEBUG docling: {filepath.name} — pymupdf page count failed: {e}", file=sys.stderr, flush=True)
+
+        good_text = has_good_text(filepath)
+        print(f"DEBUG docling: {filepath.name} — has_good_text={good_text}", file=sys.stderr, flush=True)
+        if good_text:
+            print(f"DEBUG docling: {filepath.name} — born-digital PDF, skipping OCR", file=sys.stderr, flush=True)
+            converter = _get_converter_no_ocr()
+        else:
+            print(f"DEBUG docling: {filepath.name} — scanned PDF, using OCR backend={ocr_backend} table_structure={do_table_structure}", file=sys.stderr, flush=True)
+            converter = _get_converter_ocr(ocr_backend, do_table_structure)
     else:
-        print(f"DEBUG docling: {filepath.name} — using OCR backend={ocr_backend} table_structure={do_table_structure}", file=sys.stderr, flush=True)
+        print(f"DEBUG docling: {filepath.name} — non-PDF, using OCR backend={ocr_backend} table_structure={do_table_structure}", file=sys.stderr, flush=True)
         converter = _get_converter_ocr(ocr_backend, do_table_structure)
 
-    print(f"DEBUG docling: {filepath.name} — acquiring convert lock...", file=sys.stderr, flush=True)
+    converter_id = id(converter)
+    print(f"DEBUG docling: {filepath.name} — converter={converter_id} acquiring lock...", file=sys.stderr, flush=True)
     with _convert_lock:
         print(f"DEBUG docling: {filepath.name} — starting converter.convert()", file=sys.stderr, flush=True)
         result = converter.convert(str(filepath))
-        print(f"DEBUG docling: {filepath.name} — convert() done, exporting markdown", file=sys.stderr, flush=True)
+        print(f"DEBUG docling: {filepath.name} — convert() returned, extracting document", file=sys.stderr, flush=True)
         doc = result.document
+        print(f"DEBUG docling: {filepath.name} — exporting markdown", file=sys.stderr, flush=True)
     md = doc.export_to_markdown()
     print(f"DEBUG docling: {filepath.name} — done ({len(md)} chars)", file=sys.stderr, flush=True)
     return md
