@@ -115,9 +115,10 @@ def convert_file(
         Markdown string.
     """
     import sys
+    from . import __version__
     filepath = Path(filepath)
     file_size = filepath.stat().st_size if filepath.exists() else -1
-    print(f"DEBUG docling: {filepath.name} — size={file_size} bytes", file=sys.stderr, flush=True)
+    print(f"DEBUG docling-convert-core v{__version__}: {filepath.name} — size={file_size} bytes", file=sys.stderr, flush=True)
 
     # Smart OCR routing for PDFs
     is_pdf = filepath.suffix.lower() == ".pdf"
