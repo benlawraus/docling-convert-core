@@ -1,6 +1,6 @@
 [project]
 name = "docling-convert-core"
-version = "0.1.0"
+version = "0.2.0"
 description = "Shared Docling document-to-markdown conversion with smart OCR routing"
 authors = [
     { name = "Ben" }
