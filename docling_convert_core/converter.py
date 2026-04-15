@@ -15,7 +15,7 @@ from docling.datamodel.pipeline_options import (
 )
 from docling.document_converter import DocumentConverter, PdfFormatOption, ImageFormatOption
 
-from .pdf_utils import has_good_text
+from .pdf_utils import get_page_count, has_good_text
 
 
 def build_no_ocr_format_options() -> dict:
@@ -123,14 +123,8 @@ def convert_file(
     # Smart OCR routing for PDFs
     is_pdf = filepath.suffix.lower() == ".pdf"
     if is_pdf:
-        try:
-            import pymupdf
-            pdf_doc = pymupdf.open(str(filepath))
-            page_count = len(pdf_doc)
-            pdf_doc.close()
-            print(f"DEBUG docling: {filepath.name} — {page_count} pages", file=sys.stderr, flush=True)
-        except Exception as e:
-            print(f"DEBUG docling: {filepath.name} — pymupdf page count failed: {e}", file=sys.stderr, flush=True)
+        page_count = get_page_count(filepath)
+        print(f"DEBUG docling: {filepath.name} — {page_count} pages", file=sys.stderr, flush=True)
 
         good_text = has_good_text(filepath)
         print(f"DEBUG docling: {filepath.name} — has_good_text={good_text}", file=sys.stderr, flush=True)
