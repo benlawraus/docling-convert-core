@@ -100,7 +100,7 @@ def split_pdf_pages(
 
         if not page_path.exists():
             new_doc = fitz.open()
-            new_doc.insert_pdf(doc, from_page=i, to_page=i)
+            new_doc.insert_pdf(doc, from_page=i, to_page=i, links=False)
             new_doc.save(str(page_path))
             new_doc.close()
 
